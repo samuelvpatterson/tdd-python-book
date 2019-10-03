@@ -37,16 +37,22 @@ class NewVisitorTest(unittest.TestCase):
 
 		table = self.browser.find_element_by_id('id_list_table')
 		rows = table.find_elements_by_tag_name('tr')
-		self.assertTrue(
-			any(row.text == '1: Buy peacock feathers' for row in rows),
-			"New to-do item did not appear in table"
-		)
-		
-		# There remains a box to add another entry, I add a second
-		self.fail('Finish the test!')
-		# The page updates to show both items
+		self.assertIn('1: Buy peacock feathers', [row.text for row in rows])
 
+		# As a user I want to add a second item to my list
+		inputbox = self.browser.find_element_by_id('id_new_item')
+		inputbox.send_keys('Use peacock feathers to make a fly')
+		inputbox.send_keys(Keys.ENTER)
+		time.sleep(1)
+
+		# The page updates again and shows the second item on the list
+		table = self.browser.find_element_by_id('id_list_table')
+		rows = table.find_elements_by_tag_name('tr')
+		self.assertIn('1: Buy peacock feathers', [row.text for row in rows])
+		self.assertIn('2: Use peacock feathers to make a fly', [row.text for row in rows])
+		
 		# The site generates a unique URL per user to retain the stored list and explains this to the user
+		self.fail('Finish the test!')
 
 		# As I user I visit the URL to see my to do list
 
